@@ -1,6 +1,6 @@
 package kingsbarbershop;
 
-import com.sun.source.tree.IdentifierTree;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,17 +21,13 @@ public class GestionCitas {
         try {
             archivo = new File("Citas.txt");
             if (archivo.exists()) {
-                if (validarCita(cita)) {
-                    JOptionPane.showMessageDialog(null, "LA CITA A CREAR YA EXISTE", " ", JOptionPane.ERROR_MESSAGE);
-                } else {
 
-                    FileOutputStream salida = new FileOutputStream("Citas.txt", true);
-                    MyObjectOutputStream salidaAbre = new MyObjectOutputStream(salida);
-                    salidaAbre.writeObject(cita);
-                    salida.close();
-                    salidaAbre.close();
-                    JOptionPane.showMessageDialog(null, "¡RESERVA CON EXITO!");
-                }
+                FileOutputStream salida = new FileOutputStream("Citas.txt", true);
+                MyObjectOutputStream salidaAbre = new MyObjectOutputStream(salida);
+                salidaAbre.writeObject(cita);
+                salida.close();
+                salidaAbre.close();
+                JOptionPane.showMessageDialog(null, "¡RESERVA CON EXITO!");
 
             } else {
                 FileOutputStream salida2 = new FileOutputStream("Citas.txt", true);
@@ -48,66 +44,87 @@ public class GestionCitas {
 
     }
 
-    public List<Cita> listarCitas() {
-        List<Cita> citas = new ArrayList<>();
+    
+
+    public void actualizarCita(HashMap<Long, Cita> updateMap) {
         try {
             archivo = new File("Citas.txt");
-            if (archivo.exists()) {
-                try (FileInputStream fileIn = new FileInputStream(archivo); ObjectInputStream entrada = new ObjectInputStream(fileIn)) {
-                    while (true) {
-                        try {
-                            Cita cita = (Cita) entrada.readObject();
-                            citas.add(cita);
-                        } catch (Exception e) {
-                            break;
-                        }
-                    }
-                }
+            FileOutputStream outUpdate = new FileOutputStream("Citas.txt");
+            ObjectOutputStream updates = new ObjectOutputStream(outUpdate);
+            for (Cita citaUpdate : updateMap.values()) {
+                updates.writeObject(citaUpdate);
             }
+
+            outUpdate.close();
+            updates.close();
+            JOptionPane.showMessageDialog(null, "¡ACTUALIZADO CON EXITO!");
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return citas;
-    }
 
-    public void actualizarCita(long id, Cita nuevaCita) {
-        List<Cita> citas = listarCitas();
-        for (Cita cita : citas) {
-            if (cita.getId() == id) {
-                cita.setFecha(nuevaCita.getFecha());
-                cita.setHora(nuevaCita.getHora());
-                guardarCitas(citas);
-                JOptionPane.showMessageDialog(null, "¡CITA ACTUALIZADA CON ÉXITO!");
-                return;
-            }
         }
-        JOptionPane.showMessageDialog(null, "La cita con ID " + id + " no se encontró.");
+
     }
+    
 
     public void eliminarCita(long id) {
-        List<Cita> citas = listarCitas();
-        for (Cita cita : citas) {
-            if (cita.getId() == id) {
-                citas.remove(cita);
-                guardarCitas(citas);
-                JOptionPane.showMessageDialog(null, "¡CITA ELIMINADA CON ÉXITO!");
-                return;
+        HashMap<Long, Cita> mapE = new HashMap<>();
+        List<Cita> listaEliminar = new ArrayList<>();
+        boolean existeEliminar = false;
+
+        Cita cD = new Cita();
+        archivo = new File("Citas.txt");
+        if (archivo.exists()) {
+            try {
+                FileInputStream openD= new FileInputStream("Citas.txt");
+                ObjectInputStream eliminacion = new ObjectInputStream(openD);
+                while (true) {
+                    try {
+
+                        cD = (Cita) eliminacion.readObject();
+                        listaEliminar.add(cD);
+
+                    } catch (Exception e) {
+                        break;
+                    }
+                }
+                openD.close();
+                eliminacion.close();
+                for (Cita citaDel : listaEliminar) {
+                    long idcion = citaDel.getId();
+
+                    mapE.put(idcion, citaDel);
+
+                }
+
+                for (Cita citaDelete : listaEliminar) {
+                    if (citaDelete.getId() == id ) {
+                        existeEliminar = true;
+                       
+                        mapE.remove(citaDelete.getId(),citaDelete);
+                        actualizarCita(mapE);
+
+                    }
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace(System.out);
             }
+            if (existeEliminar) {
+                JOptionPane.showMessageDialog(null, "CITA ELIMINADA");
+
+                mostrarAgenda();
+                mapE.clear();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "NO EXISTE CITA PARA ELIMINAR");
+                mapE.clear();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "NO EXISTE ARCHIVO!!!");
         }
-        JOptionPane.showMessageDialog(null, "La cita con ID " + id + " no se encontró.");
     }
 
-    private void guardarCitas(List<Cita> citas) {
-        try (FileOutputStream out = new FileOutputStream("Citas.txt"); ObjectOutputStream salida = new MyObjectOutputStream(out)) {
-            for (Cita cita : citas) {
-                salida.writeObject(cita);
-            }
-            JOptionPane.showMessageDialog(null, "¡CITAS GUARDADAS CON ÉXITO!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al guardar las citas.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+    
 
     public boolean validarCita(Cita cita) {
 
@@ -115,12 +132,10 @@ public class GestionCitas {
         boolean existenPersonas = false;
         Map<String, String> mapaFH = new HashMap<>();
         Map<Long, Long> mapaIB = new HashMap<>();
-        Map<String,String> citaObject = new HashMap<>();
+        Map<String, String> citaObject = new HashMap<>();
         Map<Long, Long> citaPerson = new HashMap<>();
         citaObject.put(cita.getFecha(), cita.getHora());
         citaPerson.put(cita.getId(), cita.getBarberoEscogido());
-
-        
 
         List<Cita> listaValidarC = new ArrayList<>();
         GestionDatos cr1 = new GestionDatos();
@@ -174,13 +189,14 @@ public class GestionCitas {
             } else {
                 JOptionPane.showMessageDialog(null, "EL CLIENTE NO EXISTE!!!", null, JOptionPane.ERROR_MESSAGE);
             }
+            if (existenPersonas) {
+                if (mapaFH.equals(citaObject) && mapaIB.equals(citaPerson)) {
+                    existeCita = true;
 
-            if (mapaFH.equals(citaObject)&&mapaIB.equals(citaPerson)) {
-                existeCita = true;
+                } else {
+                    existeCita = false;
 
-            } else {
-                existeCita = false;
-
+                }
             }
         } else {
             JOptionPane.showMessageDialog(null, "NO EXISTE EL ARCHIVO");
@@ -189,4 +205,172 @@ public class GestionCitas {
 
         return existeCita;
     }
+
+    public StringBuilder mostrarAgenda() {
+        List<Cita> listaCitasMostrar = new ArrayList<>();
+        archivo = new File("Citas.txt");
+        GestionDatos crM = new GestionDatos();
+        StringBuilder mensaje = new StringBuilder(); // Usar StringBuilder para construir el mensaje
+
+        try {
+            FileInputStream fileIn = new FileInputStream("Citas.txt");
+            ObjectInputStream entrada = new ObjectInputStream(fileIn);
+
+            if (archivo.exists()) {
+                while (true) {
+                    try {
+                        Cita citaM = (Cita) entrada.readObject();
+                        listaCitasMostrar.add(citaM);
+                    } catch (EOFException e) {
+                        // Se lanza cuando llega al final del archivo
+                        break;
+                    }
+                }
+                fileIn.close();
+                entrada.close();
+
+                for (Cita cM : listaCitasMostrar) {
+                    Persona clienteM = new Persona();
+                    //con el id se encuentra el objeto Cliente
+                    clienteM = crM.buscarPersona(cM.getId(), "Clientes.txt");
+                    Persona barberoM = new Persona();
+                    //con el id se encuentra el objeto Barbero
+                    barberoM = crM.buscarPersona(cM.getBarberoEscogido(), "Barberos.txt");
+
+                    mensaje.append("\nCLIENTE:  ").append(clienteM.getNombre()).append("\nFECHA:  ").append(cM.getFecha()).append("\nHORA:  ").append(cM.getHora()).append("\nBARBERO:  ").append(barberoM.getNombre()).append("\nSERVICIO:  ").append(cM.getServicio()).append("\n-------------------------\n");
+                }
+
+                //JOptionPane.showMessageDialog(null, mensaje.toString(), "LISTA", JOptionPane.INFORMATION_MESSAGE, null);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return mensaje;
+    }
+
+    public void editarCita(long id) {
+        HashMap<Long, Cita> map = new HashMap<>();
+        List<Cita> listaEditarCita = new ArrayList<>();
+        boolean existeEditar = false;
+        GestionDatos cr2 = new GestionDatos();
+
+        Cita c = new Cita();
+        archivo = new File("Citas.txt");
+        if (archivo.exists()) {
+            try {
+                FileInputStream open = new FileInputStream("Citas.txt");
+                ObjectInputStream edicion = new ObjectInputStream(open);
+                while (true) {
+                    try {
+
+                        c = (Cita) edicion.readObject();
+                        listaEditarCita.add(c);
+
+                    } catch (Exception e) {
+                        break;
+                    }
+                }
+                open.close();
+                edicion.close();
+                for (Cita citation : listaEditarCita) {
+                    long idcion = citation.getId();
+
+                    map.put(idcion, citation);
+
+                }
+
+                for (Cita citaE : listaEditarCita) {
+                    if (citaE.getId() == id) {
+                        existeEditar = true;
+                        int op = Integer.parseInt(JOptionPane.showInputDialog("¿Que desea Editar?\n\n1. Cliente\n2. Fecha\n3. Hora\n4. Barbero\n5. Servicio\n\n0. Cancelar"));
+                        Cita citaEditada = new Cita();
+                        switch (op) {
+                            case 1:
+                                citaEditada.setId(Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Cliente Nuevo: ")));
+                                citaEditada.setFecha(citaE.getFecha());
+                                citaEditada.setHora(citaE.getHora());
+                                citaEditada.setBarberoEscogido(citaE.getBarberoEscogido());
+                                citaEditada.setServicio(citaE.getServicio());
+
+                                map.replace(citaE.getId(), citaE, citaEditada);
+
+                                actualizarCita(map);
+
+                                break;
+                            case 2:
+                                citaEditada.setFecha(JOptionPane.showInputDialog("Ingrese la Fecha Nueva: "));
+                                citaEditada.setId(citaE.getId());
+                                citaEditada.setHora(citaE.getHora());
+                                citaEditada.setBarberoEscogido(citaE.getBarberoEscogido());
+                                citaEditada.setServicio(citaE.getServicio());
+
+                                map.replace(citaE.getId(), citaE, citaEditada);
+                                actualizarCita(map);
+
+                                break;
+                            case 3:
+                                citaEditada.setHora(JOptionPane.showInputDialog("Ingrese la Hora Nueva: "));
+                                citaEditada.setId(citaE.getId());
+                                citaEditada.setFecha(citaE.getFecha());
+                                citaEditada.setBarberoEscogido(citaE.getBarberoEscogido());
+                                citaEditada.setServicio(citaE.getServicio());
+
+                                map.replace(citaE.getId(), citaE, citaEditada);
+                                actualizarCita(map);
+
+                                break;
+                            case 4:
+                                GestionDatos crud2 = new GestionDatos();
+                                StringBuilder msj = crud2.leerPersona("Barberos.txt");
+                                citaEditada.setBarberoEscogido(Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Barbero\nBARBEROS DISPONIBLES:\n\n" + msj)));
+                                citaEditada.setFecha(citaE.getFecha());
+                                citaEditada.setHora(citaE.getHora());
+                                citaEditada.setId(citaE.getId());
+                                citaEditada.setServicio(citaE.getServicio());
+
+                                map.replace(citaE.getId(), citaE, citaEditada);
+
+                                actualizarCita(map);
+
+                                break;
+                            case 5:
+                                Vista s= new Vista();
+                                StringBuilder service = s.menuServicios();
+                                citaEditada.setServicio(service);
+                                citaEditada.setFecha(citaE.getFecha());
+                                citaEditada.setHora(citaE.getHora());
+                                citaEditada.setBarberoEscogido(citaE.getBarberoEscogido());
+                                citaEditada.setServicio(citaE.getServicio());
+
+                                map.replace(citaE.getId(), citaE, citaEditada);
+
+                                actualizarCita(map);
+
+                                break;
+                            case 0:
+                                System.exit(0);
+                                break;
+                            default:
+                                throw new AssertionError();
+                        }
+                    }
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace(System.out);
+            }
+            if (existeEditar) {
+                JOptionPane.showMessageDialog(null, "CITA EDITADA");
+                map.clear();
+
+            } else {
+                JOptionPane.showMessageDialog(null, "NO EXISTE CITA PARA EDITAR");
+                map.clear();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "NO EXISTE ARCHIVO!!!");
+        }
+    }
+
 }

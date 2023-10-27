@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -25,7 +26,6 @@ public class GestionDatos {
         try {
             archivo = new File("Administrador.txt");
             if (archivo.exists()) {
-                System.out.println("Ya existe");
             } else {
                 FileOutputStream archivoOut = new FileOutputStream("Administrador.txt");
                 ObjectOutputStream out = new ObjectOutputStream(archivoOut);
@@ -99,8 +99,8 @@ public class GestionDatos {
                 for (Persona pM : listaPersonasMostrar) {
                     mensaje.append("\nNOMBRE: ").append(pM.getNombre()).append("\nID: ").append(pM.getId()).append("\nTELEFONO: ").append(pM.getTelefono()).append("\n-------------------------\n");
                 }
-
-                //JOptionPane.showMessageDialog(null, mensaje.toString(), "LISTA", JOptionPane.INFORMATION_MESSAGE, null);
+                
+                JOptionPane.showMessageDialog(null, mensaje.toString(), "LISTA", JOptionPane.INFORMATION_MESSAGE, null);
             }
 
         } catch (Exception e) {
@@ -193,9 +193,14 @@ public class GestionDatos {
         System.out.println(existe);
         Vista menu1 = new Vista();
         if (existe && contraseña == 000) {
+           
+ ImageIcon icono2 = new ImageIcon(getClass().getResource("/kingsbarbershop/administracion.png"));
+                JOptionPane.showMessageDialog(null, " ", "INGRESO COMO  ADMINISTRADOR", JOptionPane.INFORMATION_MESSAGE, icono2);
             menu1.menuAdmin();
         } else {
             if (existe && contraseña != 000) {
+                  ImageIcon icono2 = new ImageIcon(getClass().getResource("/kingsbarbershop/operador.png"));
+                JOptionPane.showMessageDialog(null, " ", "INGRESO COMO  OPERADOR", JOptionPane.INFORMATION_MESSAGE, icono2);
                 menu1.menuOperadores();
             } else {
                 if (existe == false && contraseña != 000) {

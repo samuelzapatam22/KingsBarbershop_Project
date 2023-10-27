@@ -36,10 +36,13 @@ public class Vista {
     }
 
     public void menuAdmin() {
+       
+
         opcion = Integer.parseInt(JOptionPane.showInputDialog(null, "1. Gestion Operadores  \n2. Gestion Barberos\n\n9. Volver     0. Salir", "ADMINISTRADOR", JOptionPane.INFORMATION_MESSAGE));
         switch (opcion) {
             case 1:
                 gestionOperadores();
+                
                 break;
             case 2:
                 gestionBarberos();
@@ -59,6 +62,7 @@ public class Vista {
     }
 
     public void menuOperadores() {
+       
         opcion = Integer.parseInt(JOptionPane.showInputDialog(null, "1. Gestion Barberos  \n2. Gestion Clientes\n3. Gestion de Citas\n\n9. Volver     0. Salir", "OPERADOR", JOptionPane.INFORMATION_MESSAGE));
         switch (opcion) {
             case 1:
@@ -104,7 +108,7 @@ public class Vista {
     }
 
     public void gestionBarberos() {
-        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, " 1. Crear Barbero  \n2. Editar Barbero\n3. Eliminar Barbero\n\n9. Volver     0. Salir", "GESTION BARBEROS", JOptionPane.INFORMATION_MESSAGE));
+        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, " 1. Crear Barbero  \n2. Editar Barbero\n3. Eliminar Barbero\n4. Ver Barberos\n\n9. Volver     0. Salir", "GESTION BARBEROS", JOptionPane.INFORMATION_MESSAGE));
         Barbero barbero = new Barbero();
         GestionDatos crudEB = new GestionDatos();
 
@@ -124,6 +128,11 @@ public class Vista {
                 crudEB.editarPersona(identifB, "Barberos.txt");
                 gestionBarberos();
                 break;
+            case 4:
+                crudEB.leerPersona("Barberos.txt");
+                gestionBarberos();
+                break;
+
             case 9:
                 menuOperadores();
                 break;
@@ -138,7 +147,7 @@ public class Vista {
     }
 
     public void gestionOperadores() {
-        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, " 1. Crear Operador  \n2. Editar Operador\n3. Editar Cuenta de Operador\n4. Eliminar Operador\n\n9. Volver     0. Salir", "GESTION OPERADORES", JOptionPane.INFORMATION_MESSAGE));
+        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, " 1. Crear Operador  \n2. Editar Operador\n3. Editar Cuenta de Operador\n4. Eliminar Operador\n5. Ver Operadores\n\n9. Volver     0. Salir", "GESTION OPERADORES", JOptionPane.INFORMATION_MESSAGE));
         Operador operador = new Operador();
         GestionDatos crudEO = new GestionDatos();
 
@@ -166,6 +175,11 @@ public class Vista {
                 gestionOperadores();
 
                 break;
+            case 5:
+                crudEO.leerPersona("Operadores.txt");
+                gestionOperadores();
+
+                break;
             case 9:
                 menuAdmin();
                 break;
@@ -181,7 +195,7 @@ public class Vista {
     }
 
     public void gestionClientes() {
-        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, " 1. Crear Cliente  \n2. Editar Cliente\n3. Eliminar Cliente\n\n9. Volver     0. Salir", "GESTION CLIENTES", JOptionPane.INFORMATION_MESSAGE));
+        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, " 1. Crear Cliente  \n2. Editar Cliente\n3. Eliminar Cliente\n4. Ver Clientes\n\n9. Volver     0. Salir", "GESTION CLIENTES", JOptionPane.INFORMATION_MESSAGE));
         Cliente cliente = new Cliente();
         GestionDatos crudEC = new GestionDatos();
         switch (opcion) {
@@ -200,6 +214,9 @@ public class Vista {
                 gestionClientes();
 
                 break;
+            case 4:
+                crudEC.leerPersona("Clientes.txt");
+                gestionClientes();
             case 9:
                 menuOperadores();
                 break;
@@ -215,34 +232,48 @@ public class Vista {
 
     public void gestionCitas() {
         GestionCitas gestionCitas = new GestionCitas(); // instancia de GestionCitas
-        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, "1. Crear Cita\n2. Editar Cita\n3. Eliminar Cita\n9. Volver\n0. Salir", "GESTION CITAS", JOptionPane.INFORMATION_MESSAGE));
+        opcion = Integer.parseInt(JOptionPane.showInputDialog(null, "1. Crear Cita\n2. Editar Cita\n3. Eliminar Cita\n4. Ver Agenda\n\n9. Volver     0. Salir", "GESTION CITAS", JOptionPane.INFORMATION_MESSAGE));
         GestionDatos crud4 = new GestionDatos();
         switch (opcion) {
             case 1:
                 // Crear una nueva cita
                 long idCita = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Cliente:"));
-                String fechaCita = JOptionPane.showInputDialog("Ingrese la fecha de la cita (Ejemplo: 2023-11-01):");
-                String horaCita = JOptionPane.showInputDialog("Ingrese la hora de la cita (Ejemplo: 10:00 AM)\n\nHORARIO:\nLunes a sabado\n10:00 AM-7:00 PM:");
+                String fechaCita = JOptionPane.showInputDialog("Ingrese la fecha de la cita (Ejemplo: 2023-11-01):").toLowerCase();
+                String horaCita = JOptionPane.showInputDialog("Ingrese la hora de la cita (Ejemplo: 10:00 AM)\n\nHORARIO:\nLunes a sabado\n10:00 AM-7:00 PM:").toLowerCase().replaceAll("\\s+", "");
                 StringBuilder msj = crud4.leerPersona("Barberos.txt");
-                long barberoseleccionado = (Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Barbero\n\n" + msj)));
-                String service = JOptionPane.showInputDialog(menuServicios());
+
+                long barberoseleccionado = (Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Barbero\nBARBEROS DISPONIBLES:\n\n" + msj)));
+                StringBuilder service = menuServicios();
                 Cita nuevaCita = new Cita(idCita, fechaCita, horaCita, barberoseleccionado, service);
-                gestionCitas.crearCita(nuevaCita);
+                if (gestionCitas.validarCita(nuevaCita)) {
+                    JOptionPane.showMessageDialog(null, "LA CITA YA EXISTE");
+                    gestionCitas();
+                } else {
+
+                    gestionCitas.crearCita(nuevaCita);
+                    gestionCitas();
+                }
+
                 break;
 
             case 2:
                 // Editar una cita existente
-                long idCitaAEditar = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID de la cita a editar:"));
-                String nuevaFechaCita = JOptionPane.showInputDialog("Ingrese la nueva fecha de la cita:");
-                String nuevaHoraCita = JOptionPane.showInputDialog("Ingrese la nueva hora de la cita:");
-               // Cita citaActualizada = new Cita(idCitaAEditar, nuevaFechaCita, nuevaHoraCita);
-               // gestionCitas.actualizarCita(idCitaAEditar, citaActualizada);
+                long idCitaAEditar = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Cliente::"));
+                gestionCitas.editarCita(idCitaAEditar);
+                gestionCitas();
                 break;
 
             case 3:
                 // Eliminar una cita
-                long idCitaAEliminar = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID de la cita a eliminar:"));
+                long idCitaAEliminar = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Cliente:"));
                 gestionCitas.eliminarCita(idCitaAEliminar);
+                gestionCitas();
+                break;
+            case 4:
+                StringBuilder agenda = new StringBuilder();
+                agenda = gestionCitas.mostrarAgenda();
+                JOptionPane.showMessageDialog(null, agenda, "AGENDA", JOptionPane.INFORMATION_MESSAGE);
+                gestionCitas();
                 break;
 
             case 9:
@@ -324,7 +355,7 @@ public class Vista {
                 }
                 break;
             case 9:
-                JOptionPane.showMessageDialog(null, "Reserva Cancelada",null,JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Reserva Cancelada", null, JOptionPane.ERROR_MESSAGE);
                 gestionCitas();
                 break;
             case 0:

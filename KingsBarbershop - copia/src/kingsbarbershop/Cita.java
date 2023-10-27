@@ -17,14 +17,14 @@ public class Cita implements Serializable {
     private String fecha;
     private String hora;
     private long barberoEscogido;
-    private String servicio;
+    private StringBuilder servicio;
 
     public Cita() {
     }
     
     
     // Constructor
-    public Cita(long id, String fecha, String hora, long barberoEscogido, String servicio) {    
+    public Cita(long id, String fecha, String hora, long barberoEscogido, StringBuilder servicio) {    
         this.id = id;
         this.fecha = fecha;
         this.hora = hora;
@@ -65,11 +65,11 @@ public class Cita implements Serializable {
         this.barberoEscogido = barberoEscogido;
     }
 
-    public String getServicio() {
+    public StringBuilder getServicio() {
         return servicio;
     }
 
-    public void setServicio(String servicio) {
+    public void setServicio(StringBuilder servicio) {
         this.servicio = servicio;
     }
     
