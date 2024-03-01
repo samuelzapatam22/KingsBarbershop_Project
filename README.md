@@ -5,7 +5,7 @@
 ## ¿Cómo funciona?
 
 ### LogIn
-Accede predeterminadamente con usuario: **codigoc13** y contraseña: **1234**, luego podrás crear un operador, que será tu nueva cuenta a partir de ese momento.
+Accede predeterminadamente con usuario: **codigoc13** y contraseña: **000**, luego podrás crear un operador, que será tu nueva cuenta a partir de ese momento.
 
 ![LogIn](loginkings.png)
 
