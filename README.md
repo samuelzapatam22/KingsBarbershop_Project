@@ -5,13 +5,9 @@
 ## ¿Cómo funciona?
 
 ### LogIn
-<<<<<<< HEAD
 tene mos dos perfiles de ingreso
 1. Administrador (usuario y contraseña predeterminado)
 2. Operador (cuenta creada por el administrador)
-=======
-Accede predeterminadamente con usuario: **codigoc13** y contraseña: **000**, luego podrás crear un operador, que será tu nueva cuenta a partir de ese momento.
->>>>>>> ebe07dbb9a532b1d84ee739fcfd29d75dfd0e013
 
 ![LogIn](loginkings.png)
 
