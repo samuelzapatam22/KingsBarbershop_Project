@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.sql.CallableStatement;
+
 
 /**
  *
@@ -43,9 +45,9 @@ public class GestionDatos {
 
     }
 
-    static void insertarDatosUsers(Connection conexion, String nombre, String documento, String telefono, String usuario, String contraseña) {
-        // Sentencia SQL con parámetros
-        String sql = "INSERT INTO users (first_name, document, phone,\"user\", password,user_type) VALUES (?, ?, ?, ?, ?, ?)";
+public static void insertarDatosUsers(Connection conexion, String nombre, String documento, String telefono, String usuario, String contraseña) {
+        // Sentencia SQL para llamar a la función almacenada
+        String sql = "SELECT insert_user(?, ?, ?, ?, ?, CAST(? AS smallint))";
 
         try (PreparedStatement preparedStatement = conexion.prepareStatement(sql)) {
             // Establecer valores para los parámetros
@@ -54,47 +56,47 @@ public class GestionDatos {
             preparedStatement.setString(3, telefono);
             preparedStatement.setString(4, usuario);
             preparedStatement.setString(5, contraseña);
-            preparedStatement.setInt(6, 2);
+            preparedStatement.setInt(6, 2); // user_type fijo en 2
 
-            // Ejecutar la inserción
-            int filasAfectadas = preparedStatement.executeUpdate();
-            System.out.println("Filas afectadas por la inserción: " + filasAfectadas);
+            // Ejecutar la llamada a la función
+            preparedStatement.executeQuery();
+            System.out.println("Datos insertados correctamente.");
         } catch (SQLException e) {
             System.err.println("Error al ejecutar la inserción: " + e.getMessage());
         }
     }
 
     static void insertarDatosBarbers(Connection conexion, String nombre, String documento, String telefono) {
-        // Sentencia SQL con parámetros
-        String sql = "INSERT INTO barbers (first_name, document, phone) VALUES (?, ?, ?)";
+        // Sentencia SQL para llamar a la función almacenada
+        String sql = "{ call insert_barber(?, ?, ?) }";
 
-        try (PreparedStatement preparedStatement = conexion.prepareStatement(sql)) {
+        try (CallableStatement callableStatement = conexion.prepareCall(sql)) {
             // Establecer valores para los parámetros
-            preparedStatement.setString(1, nombre);
-            preparedStatement.setString(2, documento);
-            preparedStatement.setString(3, telefono);
+            callableStatement.setString(1, nombre);
+            callableStatement.setString(2, documento);
+            callableStatement.setString(3, telefono);
 
-            // Ejecutar la inserción
-            int filasAfectadas = preparedStatement.executeUpdate();
-            System.out.println("Filas afectadas por la inserción: " + filasAfectadas);
+            // Ejecutar la llamada a la función
+            callableStatement.execute();
+            System.out.println("Datos insertados correctamente.");
         } catch (SQLException e) {
             System.err.println("Error al ejecutar la inserción: " + e.getMessage());
         }
     }
 
-    static void insertarDatosClients(Connection conexion, String nombre, String documento, String telefono, int id_user) {
-        // Sentencia SQL con parámetros
-        String sql = "INSERT INTO clients (first_name, document, phone) VALUES (?, ?, ?)";
+    static void insertarDatosClients(Connection conexion, String nombre, String documento, String telefono) {
+        // Sentencia SQL para llamar a la función almacenada
+        String sql = "{ call insert_client(?, ?, ?) }";
 
-        try (PreparedStatement preparedStatement = conexion.prepareStatement(sql)) {
+        try (CallableStatement callableStatement = conexion.prepareCall(sql)) {
             // Establecer valores para los parámetros
-            preparedStatement.setString(1, nombre);
-            preparedStatement.setString(2, documento);
-            preparedStatement.setString(3, telefono);
+            callableStatement.setString(1, nombre);
+            callableStatement.setString(2, documento);
+            callableStatement.setString(3, telefono);
 
-            // Ejecutar la inserción
-            int filasAfectadas = preparedStatement.executeUpdate();
-            System.out.println("Filas afectadas por la inserción: " + filasAfectadas);
+            // Ejecutar la llamada a la función
+            callableStatement.execute();
+            System.out.println("Datos insertados correctamente.");
         } catch (SQLException e) {
             System.err.println("Error al ejecutar la inserción: " + e.getMessage());
         }

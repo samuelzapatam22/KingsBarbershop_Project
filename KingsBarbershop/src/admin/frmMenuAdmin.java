@@ -212,6 +212,11 @@ public class frmMenuAdmin extends javax.swing.JFrame {
         btnElimnarBarbero1.setFont(new java.awt.Font("Gadugi", 1, 16)); // NOI18N
         btnElimnarBarbero1.setText("Eliminar");
         btnElimnarBarbero1.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(255, 153, 0), new java.awt.Color(255, 153, 0)));
+        btnElimnarBarbero1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnElimnarBarbero1ActionPerformed(evt);
+            }
+        });
         jpnFormOpera.add(btnElimnarBarbero1, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 560, 150, 40));
 
         jblsubtNombCliente.setFont(new java.awt.Font("Gadugi", 1, 19)); // NOI18N
@@ -255,7 +260,7 @@ public class frmMenuAdmin extends javax.swing.JFrame {
         jpnFormOpera.add(jlbtitulo_Reservas1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 70, 580, 60));
 
         fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imgs/fonddoMenuOpe2.png"))); // NOI18N
-        jpnFormOpera.add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-450, -20, 1260, 690));
+        jpnFormOpera.add(fondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(-410, -10, 1260, 690));
 
         panelAdmin.addTab("Reportes", jpnFormOpera);
 
@@ -404,6 +409,11 @@ public class frmMenuAdmin extends javax.swing.JFrame {
         btnElimnarBarbero2.setFont(new java.awt.Font("Gadugi", 1, 16)); // NOI18N
         btnElimnarBarbero2.setText("Eliminar");
         btnElimnarBarbero2.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(255, 153, 0), new java.awt.Color(255, 153, 0)));
+        btnElimnarBarbero2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnElimnarBarbero2ActionPerformed(evt);
+            }
+        });
         jpbFormServicios.add(btnElimnarBarbero2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 560, 150, 40));
 
         jlbtitulo_Reservas2.setBackground(new java.awt.Color(102, 102, 102));
@@ -688,6 +698,14 @@ public class frmMenuAdmin extends javax.swing.JFrame {
     private void txtservicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtservicioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtservicioActionPerformed
+
+    private void btnElimnarBarbero1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimnarBarbero1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnElimnarBarbero1ActionPerformed
+
+    private void btnElimnarBarbero2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimnarBarbero2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnElimnarBarbero2ActionPerformed
 
     /**
      * @param args the command line arguments

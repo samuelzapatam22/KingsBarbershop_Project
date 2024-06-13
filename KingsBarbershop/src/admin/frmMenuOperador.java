@@ -355,6 +355,11 @@ public class frmMenuOperador extends javax.swing.JFrame {
         btnElimnarBarbero.setFont(new java.awt.Font("Gadugi", 1, 16)); // NOI18N
         btnElimnarBarbero.setText("Eliminar");
         btnElimnarBarbero.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(255, 153, 0), new java.awt.Color(255, 153, 0)));
+        btnElimnarBarbero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnElimnarBarberoActionPerformed(evt);
+            }
+        });
         jpnBarberos.add(btnElimnarBarbero, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 560, 150, 40));
 
         btnCancelarBarbero.setBackground(new java.awt.Color(0, 0, 0));
@@ -562,7 +567,7 @@ public class frmMenuOperador extends javax.swing.JFrame {
             try {
                 Connection conexionC = DriverManager.getConnection(jdbcUrl, usuario, contraseña);
                 System.out.println("¡Conexión exitosa!");
-                gdClients.insertarDatosClients(conexionC, nombreCliente, idCliente, telefonoCliente, 1);
+                gdClients.insertarDatosClients(conexionC, nombreCliente, idCliente, telefonoCliente);
                 int sB = gdClients.idSerialBarbero(conexionC, barberoEscogido);
                 int sS = gdClients.idSerialServicio(conexionC, servicioEscogido);
                 int sC = gdClients.idSerialCliente(conexionC, nombreCliente);
@@ -696,6 +701,10 @@ public class frmMenuOperador extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_cbxBarberosActionPerformed
+
+    private void btnElimnarBarberoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnElimnarBarberoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnElimnarBarberoActionPerformed
 
     /**
      * @param args the command line arguments
